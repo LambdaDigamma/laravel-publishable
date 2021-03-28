@@ -3,6 +3,7 @@
 namespace LaravelPublishable;
 
 use Exception;
+use Illuminate\Support\Carbon;
 use LaravelPublishable\Scopes\PublishableScope;
 
 /**
@@ -43,12 +44,14 @@ trait Publishable
 
     /**
      * Publish the model.
+     * 
+     * @param Carbon|null $publishAt Specify the publishing date or set null to publish now.
      *
      * @return bool|null
      *
      * @throws Exception
      */
-    public function publish()
+    public function publish(?Carbon $publishAt = null)
     {
         $this->mergeAttributesFromClassCasts();
 
@@ -71,7 +74,7 @@ trait Publishable
         // on the parents
         $this->touchOwners();
 
-        $this->runPublish();
+        $this->runPublish($publishAt);
 
         // Fire unpublished event to allow hooking into the post-publish operations.
         $this->fireModelEvent('published', false);
@@ -81,17 +84,46 @@ trait Publishable
     }
 
     /**
+     * Publish the model at a give date.
+     * 
+     * @param Carbon $publishAt Specify the publishing date.
+     *
+     * @return bool|null
+     *
+     * @throws Exception
+     */
+    public function publishAt(Carbon $publishAt)
+    {
+        return $this->publish($publishAt);
+    }
+
+    /**
+     * Schedule the model to be published on a given date.
+     * 
+     * @param Carbon $publishAt Specify the publishing date.
+     *
+     * @return bool|null
+     *
+     * @throws Exception
+     */
+    public function scheduleFor(Carbon $publishAt)
+    {
+        return $this->publish($publishAt);
+    }
+
+    /**
      * Perform the actual publish query on this model instance.
      *
      * @return void
      */
-    public function runPublish()
+    public function runPublish(?Carbon $publishAt)
     {
         $query = $this->setKeysForSaveQuery($this->newModelQuery());
 
         $time = $this->freshTimestamp();
+        $publishingTime = $publishAt ?? $time;
 
-        $columns = [$this->getPublishedAtColumn() => $this->fromDateTime($time)];
+        $columns = [$this->getPublishedAtColumn() => $this->fromDateTime($publishingTime)];
 
         $this->{$this->getPublishedAtColumn()} = $time;
 

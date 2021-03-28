@@ -2,6 +2,9 @@
 
 namespace LaravelPublishable\Tests;
 
+use Illuminate\Support\Carbon;
+use Spatie\TestTime\TestTime;
+
 class PublishableTest extends TestCase
 {
     /** @test */
@@ -14,6 +17,39 @@ class PublishableTest extends TestCase
         $model->publish();
 
         $this->assertNotNull($model->fresh()->published_at);
+    }
+
+    /** @test */
+    public function a_model_can_be_published_in_the_future()
+    {
+        TestTime::freeze('Y-m-d H:i:s', '2021-03-31 20:30:00');
+
+        $model = PublishableModel::factory()->create();
+        
+        $this->assertNull($model->fresh()->published_at);
+
+        $model->publish(Carbon::parse('2021-03-31 21:00:00'));
+
+        $this->assertEquals('2021-03-31 21:00:00', $model->fresh()->published_at->toDateTimeString());
+    }
+
+    /** @test */
+    public function a_model_can_be_published_in_the_future_and_only_be_accessed_after_that()
+    {
+        TestTime::freeze('Y-m-d H:i:s', '2021-03-31 20:30:00');
+
+        $model = PublishableModel::factory()->create();
+        
+        $this->assertNull($model->fresh()->published_at);
+
+        $model->publishAt(Carbon::parse('2021-03-31 21:00:00'));
+
+        $this->assertCount(0, PublishableModel::all());
+        $this->assertEquals('2021-03-31 21:00:00', $model->fresh()->published_at->toDateTimeString());
+
+        TestTime::freeze('Y-m-d H:i:s', '2021-03-31 21:00:00');
+
+        $this->assertCount(1, PublishableModel::all());
     }
 
     /** @test */

@@ -31,7 +31,9 @@ class PublishableScope implements Scope
     public function apply(Builder $builder, Model $model)
     {
         if (is_callable([$model, 'getQualifiedPublishedAtColumn'], true, $name)) {
-            $builder->whereNull($model->getQualifiedPublishedAtColumn());
+            $builder->where(
+                $model->getQualifiedPublishedAtColumn(), '<=', now()->toDateTimeString()
+            );
         }
     }
 
@@ -100,7 +102,7 @@ class PublishableScope implements Scope
     }
 
     /**
-     * Add the with-notpublished extension to the builder.
+     * Add the with- extension to the builder.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $builder
      * @return void
@@ -127,8 +129,8 @@ class PublishableScope implements Scope
         $builder->macro('withoutNotPublished', function (Builder $builder) {
             $model = $builder->getModel();
 
-            return $builder->withoutGlobalScope($this)->whereNull(
-                $model->getQualifiedPublishedAtColumn()
+            return $builder->withoutGlobalScope($this)->where(
+                $model->getQualifiedPublishedAtColumn(), '<=', now()->toDateTimeString()
             );
         });
     }
@@ -144,7 +146,7 @@ class PublishableScope implements Scope
         $builder->macro('onlyNotPublished', function (Builder $builder) {
             $model = $builder->getModel();
 
-            $builder->withoutGlobalScope($this)->whereNotNull(
+            $builder->withoutGlobalScope($this)->whereNull(
                 $model->getQualifiedPublishedAtColumn()
             );
 

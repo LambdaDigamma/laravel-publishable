@@ -11,6 +11,12 @@ Not published models are excluded from queries by default but can be queried via
 
 This package allows easy publishing and unpublishing of models by combining scopes and macros.
 
+## How does it work?
+
+The package provides a trait `Publishable` for your Eloquent model.
+Your database schema has to have a `published_at` datetime column so that the trait can read and write it.
+By reading this column the package can determine which models already have been published and provide the requested models.
+
 ## Installation
 
 You can install the package via composer:
@@ -59,6 +65,8 @@ The extensions shipped with this trait include; `publish`, `unpublish`, `withNot
 ```php
 $post = Post::first();
 $post->publish();
+$post->publishAt(now()->addHour(1));
+$post->scheduleFor(new Carbon('2021-04-01 10:00:00'));
 $post->unpublish();
 
 $postsWithNotPublished = Post::query()->withNotPublished();
