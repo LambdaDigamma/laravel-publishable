@@ -1,0 +1,55 @@
+{
+	"name": "lambdadigamma/laravel-publishable",
+	"description": "A Laravel Eloquent model trait for publishing and unpublishing",
+	"keywords": [
+		"laravel",
+		"laravel-publishable"
+	],
+	"license": "MIT",
+	"homepage": "https://github.com/lambdadigamma/laravel-publishable",
+	"type": "library",
+	"support": {
+		"issues": "https://github.com/lambdadigamma/laravel-publishable/issues",
+		"source": "https://github.com/lambdadigamma/laravel-publishable"
+	},
+	"authors": [
+		{
+			"name": "Lennart Fischer",
+			"email": "github@lambdadigamma.com"
+		}
+	],
+	"require": {
+		"php": "^7.3|^8.0",
+		"illuminate/support": "^8.0",
+		"illuminate/database": "^8.0"
+	},
+	"require-dev": {
+		"illuminate/pagination": "^8.0",
+		"orchestra/testbench": "^6.15",
+		"phpunit/phpunit": "^8.4|^9.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"LaravelPublishable\\": "src"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"LaravelPublishable\\Tests\\": "tests"
+		}
+	},
+	"scripts": {
+		"test": "vendor/bin/phpunit --colors=always",
+		"test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+	},
+	"config": {
+		"sort-packages": true
+	},
+	"extra": {
+		"laravel": {
+			"providers": [
+				"LaravelPublishable\\LaravelPublishableServiceProvider"
+			]
+		}
+	}
+}
