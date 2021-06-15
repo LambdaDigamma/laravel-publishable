@@ -27,6 +27,9 @@ class LaravelPublishableServiceProvider extends ServiceProvider
         Blueprint::macro('publishedAt', function ($column = 'published_at', $precision = 0) {
             return $this->timestamp($column, $precision)->nullable();
         });
+        Blueprint::macro('expiredAt', function ($column = 'expired_at', $precision = 0) {
+            return $this->timestamp($column, $precision)->nullable();
+        });
     }
 
     /**

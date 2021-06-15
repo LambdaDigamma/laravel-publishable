@@ -55,6 +55,16 @@ abstract class TestCase extends Orchestra
             });
 
         $app['db']
+        ->connection()
+        ->getSchemaBuilder()
+            ->create('expirable_models', function (Blueprint $table) {
+                $table->increments('id');
+                $table->timestamps();
+                $table->expiredAt();
+                $table->softDeletes();
+            });
+
+        $app['db']
             ->connection()
             ->getSchemaBuilder()
             ->create('regular_models', function (Blueprint $table) {

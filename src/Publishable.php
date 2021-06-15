@@ -21,7 +21,7 @@ trait Publishable
     public $publishes = true;
 
     /**
-     * Boot the archiving trait for a model.
+     * Boot the publishing trait for a model.
      *
      * @return void
      */
@@ -213,7 +213,7 @@ trait Publishable
     }
 
     /**
-     * Get the name of the "created at" column.
+     * Get the name of the "published at" column.
      *
      * @return string
      */
@@ -223,7 +223,7 @@ trait Publishable
     }
 
     /**
-     * Get the fully qualified "created at" column.
+     * Get the fully qualified "published at" column.
      *
      * @return string
      */
