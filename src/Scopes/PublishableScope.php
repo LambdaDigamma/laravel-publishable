@@ -102,7 +102,7 @@ class PublishableScope implements Scope
     }
 
     /**
-     * Add the with- extension to the builder.
+     * Add the with-notpublished extension to the builder.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $builder
      * @return void
