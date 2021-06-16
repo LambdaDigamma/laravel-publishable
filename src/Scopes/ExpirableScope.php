@@ -31,9 +31,11 @@ class ExpirableScope implements Scope
     public function apply(Builder $builder, Model $model)
     {
         if (is_callable([$model, 'getQualifiedExpiredAtColumn'], true, $name)) {
-            $builder->where(
-                $model->getQualifiedExpiredAtColumn(), '>=', now()->toDateTimeString()
-            );
+            $builder
+                ->whereNull($model->getQualifiedExpiredAtColumn())
+                ->orWhere(
+                    $model->getQualifiedExpiredAtColumn(), '>=', now()->toDateTimeString()
+                );
         }
     }
 
@@ -58,7 +60,7 @@ class ExpirableScope implements Scope
      */
     protected function getExpiredAtColumn(Builder $builder)
     {
-        if (count($builder->getQuery()->joins) > 0) {
+        if (count((array) $builder->getQuery()->joins) > 0) {
             return $builder->getModel()->getQualifiedExpiredAtColumn();
         }
 
@@ -131,6 +133,8 @@ class ExpirableScope implements Scope
 
             return $builder->withoutGlobalScope($this)->where(
                 $model->getQualifiedExpiredAtColumn(), '>=', now()->toDateTimeString()
+            )->orWhereNull(
+                $model->getQualifiedExpiredAtColumn()
             );
         });
     }
@@ -146,8 +150,8 @@ class ExpirableScope implements Scope
         $builder->macro('onlyExpired', function (Builder $builder) {
             $model = $builder->getModel();
 
-            $builder->withoutGlobalScope($this)->whereNull(
-                $model->getQualifiedExpiredAtColumn()
+            $builder->withoutGlobalScope($this)->where(
+                $model->getQualifiedExpiredAtColumn(), '<=', now()->toDateTimeString()
             );
 
             return $builder;

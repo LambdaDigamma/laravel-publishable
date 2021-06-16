@@ -44,7 +44,6 @@ class ExpirableTest extends TestCase
 
         $model->expireAt(Carbon::parse('2021-03-31 21:00:00'));
         $this->assertEquals('2021-03-31 21:00:00', $model->fresh()->expired_at->toDateTimeString());
-
         $this->assertCount(1, ExpirableModel::all());
 
         TestTime::freeze('Y-m-d H:i:s', '2021-03-31 21:10:00');
@@ -67,8 +66,12 @@ class ExpirableTest extends TestCase
     /** @test */
     public function a_model_cannot_be_queried_normally_when_not_expired()
     {
+        TestTime::freeze('Y-m-d H:i:s', '2021-03-31 20:30:00');
+
         ExpirableModel::factory()->expired()->create();
         ExpirableModel::factory()->create();
+
+        TestTime::freeze('Y-m-d H:i:s', '2021-03-31 21:00:00');
 
         $this->assertDatabaseCount('expirable_models', 2);
         $this->assertCount(1, ExpirableModel::all());
@@ -77,8 +80,12 @@ class ExpirableTest extends TestCase
     /** @test */
     public function all_models_can_be_found_with_the_withExpired_scope()
     {
+        TestTime::freeze('Y-m-d H:i:s', '2021-03-31 20:30:00');
+
         ExpirableModel::factory()->expired()->create();
         ExpirableModel::factory()->create();
+
+        TestTime::freeze('Y-m-d H:i:s', '2021-03-31 21:30:00');
 
         $this->assertCount(1, ExpirableModel::all());
         $this->assertCount(2, ExpirableModel::withExpired()->get());
@@ -87,8 +94,12 @@ class ExpirableTest extends TestCase
     /** @test */
     public function only_expired_models_can_be_found_with_the_onlyExpired_scope()
     {
+        TestTime::freeze('Y-m-d H:i:s', '2021-03-31 20:30:00');
+
         ExpirableModel::factory()->expired()->create();
         ExpirableModel::factory()->create();
+
+        TestTime::freeze('Y-m-d H:i:s', '2021-03-31 21:30:00');
 
         $this->assertCount(1, ExpirableModel::onlyExpired()->get());
     }

@@ -67,6 +67,17 @@ abstract class TestCase extends Orchestra
         $app['db']
             ->connection()
             ->getSchemaBuilder()
+            ->create('all_traits_models', function (Blueprint $table) {
+                $table->increments('id');
+                $table->timestamps();
+                $table->publishedAt();
+                $table->expiredAt();
+                $table->softDeletes();
+            });
+
+        $app['db']
+            ->connection()
+            ->getSchemaBuilder()
             ->create('regular_models', function (Blueprint $table) {
                 $table->increments('id');
                 $table->timestamps();

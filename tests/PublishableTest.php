@@ -96,7 +96,7 @@ class PublishableTest extends TestCase
     }
 
     /** @test */
-    public function models_without_the_archivable_trait_are_not_scoped()
+    public function models_without_the_publishable_trait_are_not_scoped()
     {
         RegularModel::factory()->create();
 

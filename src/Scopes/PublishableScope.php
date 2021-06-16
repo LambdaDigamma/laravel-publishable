@@ -58,7 +58,7 @@ class PublishableScope implements Scope
      */
     protected function getPublishedAtColumn(Builder $builder)
     {
-        if (count($builder->getQuery()->joins) > 0) {
+        if (count((array) $builder->getQuery()->joins) > 0) {
             return $builder->getModel()->getQualifiedPublishedAtColumn();
         }
 

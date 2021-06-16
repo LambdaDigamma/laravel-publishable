@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use LaravelPublishable\Expirable;
 use LaravelPublishable\Publishable;
 
-class PublishableModel extends Model
+class AllTraitsModel extends Model
 {
     use HasFactory;
     use HasTimestamps;
     use Publishable;
+    use Expirable;
 
-    protected $table = 'publishable_models';
+    protected $table = 'all_traits_models';
     protected $guarded = [];
 
 }
