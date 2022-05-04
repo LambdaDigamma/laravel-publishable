@@ -44,7 +44,7 @@ trait Publishable
 
     /**
      * Publish the model.
-     * 
+     *
      * @param Carbon|null $publishAt Specify the publishing date or set null to publish now.
      *
      * @return bool|null
@@ -85,7 +85,7 @@ trait Publishable
 
     /**
      * Publish the model at a give date.
-     * 
+     *
      * @param Carbon $publishAt Specify the publishing date.
      *
      * @return bool|null
@@ -99,7 +99,7 @@ trait Publishable
 
     /**
      * Schedule the model to be published on a given date.
-     * 
+     *
      * @param Carbon $publishAt Specify the publishing date.
      *
      * @return bool|null
@@ -163,9 +163,15 @@ trait Publishable
      *
      * @return bool
      */
-    public function isPublished()
+    public function isPublished(): bool
     {
-        return ! is_null($this->{$this->getPublishedAtColumn()});
+        $published_at = $this->{$this->getPublishedAtColumn()};
+
+        if (! $published_at) {
+            return false;
+        }
+
+        return $published_at <= Carbon::now();
     }
 
     /**

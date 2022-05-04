@@ -27,7 +27,7 @@ class AllTraitsTest extends TestCase
         TestTime::freeze('Y-m-d H:i:s', '2021-03-31 20:30:00');
 
         $model = AllTraitsModel::factory()->create();
-        
+
         $this->assertNull($model->fresh()->published_at);
 
         $model->publish(Carbon::parse('2021-03-31 21:00:00'));
@@ -41,7 +41,7 @@ class AllTraitsTest extends TestCase
         TestTime::freeze('Y-m-d H:i:s', '2021-03-31 20:30:00');
 
         $model = AllTraitsModel::factory()->create();
-        
+
         $this->assertNull($model->fresh()->published_at);
 
         $model->publishAt(Carbon::parse('2021-03-31 21:00:00'));
@@ -117,7 +117,7 @@ class AllTraitsTest extends TestCase
         TestTime::freeze('Y-m-d H:i:s', '2021-03-31 20:30:00');
 
         $model = AllTraitsModel::factory()->create();
-        
+
         $this->assertNull($model->fresh()->expired_at);
 
         $model->expire(Carbon::parse('2021-03-31 21:00:00'));
@@ -131,7 +131,7 @@ class AllTraitsTest extends TestCase
         TestTime::freeze('Y-m-d H:i:s', '2021-03-31 20:30:00');
 
         $model = AllTraitsModel::factory()->published()->create();
-        
+
         $this->assertNull($model->fresh()->expired_at);
 
         $model->expireAt(Carbon::parse('2021-03-31 21:00:00'));
@@ -195,4 +195,19 @@ class AllTraitsTest extends TestCase
 
         $this->assertCount(1, AllTraitsModel::onlyExpired()->get());
     }
+
+    /** @test */
+    public function accessor_isPublished_returns_true_if_published()
+    {
+        $this->travelTo(Carbon::parse('2021-03-31 20:30:00'));
+        $model = PublishableModel::factory()->create([
+            'published_at' => Carbon::parse('2021-03-31 21:30:00'),
+        ]);
+
+        $this->assertFalse($model->isPublished());
+
+        $this->travelTo(Carbon::parse('2021-03-31 21:35:00'));
+        $this->assertTrue($model->isPublished());
+    }
+
 }
